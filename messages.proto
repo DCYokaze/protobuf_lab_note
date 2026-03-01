@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package railway;
+
+// Message from Python to C++
+message TrainCommand {
+  string train_id = 1;
+  CommandType command = 2;
+  double target_speed = 3;
+  int64 timestamp = 4;
+  
+  enum CommandType {
+    ACCELERATE = 0;
+    BRAKE = 1;
+    STOP = 2;
+    EMERGENCY_STOP = 3;
+  }
+}
+
+// Message from C++ to Python
+message TrainStatus {
+  string train_id = 1;
+  double current_speed = 2;
+  double position = 3;
+  StatusCode status = 4;
+  int64 timestamp = 5;
+  repeated string warnings = 6;
+  
+  enum StatusCode {
+    NORMAL = 0;
+    WARNING = 1;
+    ERROR = 2;
+    EMERGENCY = 3;
+  }
+}
+
+// Bidirectional message container
+message Message {
+  oneof payload {
+    TrainCommand command = 1;
+    TrainStatus status = 2;
+  }
+}
